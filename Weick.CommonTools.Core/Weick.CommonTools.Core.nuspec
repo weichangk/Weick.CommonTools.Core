@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Weick.CommonTools.Core</id>
+    <version>1.0.0</version>
+    <title>Weick.CommonTools.Core</title>
+    <authors>weichangk</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://github.com/weichangk/Weick.CommonTools.Core</projectUrl>
+    <description>CommonTools</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright @2022</copyright>
+    <tags>CommonTools</tags>
+    <dependencies>
+        <dependency id="Consul" version="1.6.10.4" />
+        <dependency id="Microsoft.AspNetCore.Mvc.NewtonsoftJson" version="3.1.3" />
+        <dependency id="Microsoft.Extensions.DependencyModel" version="3.1.5" />
+        <dependency id="System.Drawing.Common" version="4.7.0" />
+    </dependencies>
+  </metadata>
+</package>
