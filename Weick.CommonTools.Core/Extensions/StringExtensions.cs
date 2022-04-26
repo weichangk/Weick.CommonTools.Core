@@ -717,5 +717,25 @@ namespace System
             return string.Format(provider, format, args);
         }
         #endregion
+        #region base64
+        public static string Base64DataResolve(this string base64Str, out string contentType)
+        {
+            string data = base64Str;
+            contentType = "";
+            var array = base64Str.Split(";base64,");
+            if (array.Length > 1)
+            {
+                contentType = array[0].Replace("data:", "");
+                data = array[1];
+            }
+            return data;
+        }
+
+        public static Stream Base64StrToStream(this string base64Str)
+        {
+            byte[] arr = Convert.FromBase64String(base64Str);
+            return new MemoryStream(arr);
+        }
+        #endregion
     }
 }
