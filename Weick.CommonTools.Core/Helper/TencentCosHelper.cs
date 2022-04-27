@@ -10,6 +10,7 @@ using COSXML.Transfer;
 using COSXML.Model;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Weick.CommonTools.Code.Helper
 {
@@ -79,7 +80,10 @@ namespace Weick.CommonTools.Code.Helper
         Task<CosResponseModel> DownObject(string key, string localDir, string localFileName);
 
         // 删除文件
-        Task<CosResponseModel> DeleteObject(string buketName);
+        Task<CosResponseModel> DeleteObject(string key);
+
+        // 批量删除文件
+        Task<CosResponseModel> BatchDeleteObject(List<string> keys);
     }
 
     /// <summary>
@@ -320,18 +324,38 @@ namespace Weick.CommonTools.Code.Helper
                 return new CosResponseModel { Code = 500, Message = serverEx.GetInfo() };
             }
         }
-        public async Task<CosResponseModel> DeleteObject(string buketName)
+        public async Task<CosResponseModel> DeleteObject(string key)
         {
             try
             {
                 string bucket = this.buketName + "-" + this.appid; //存储桶名称 格式：BucketName-APPID
-                string key = "exampleobject"; //对象在存储桶中的位置，即称对象键.
                 DeleteObjectRequest request = new DeleteObjectRequest(bucket, key);
                 //设置签名有效时长
                 request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.Seconds), 600);
                 //执行请求
                 DeleteObjectResult result = await Task.FromResult(this.cosXml.DeleteObject(request));
 
+                return new CosResponseModel { Code = 200, Message = "Success", Data = result.GetResultInfo() };
+            }
+            catch (CosClientException clientEx)
+            {
+                return new CosResponseModel { Code = 500, Message = "CosClientException: " + clientEx.Message };
+            }
+            catch (CosServerException serverEx)
+            {
+                return new CosResponseModel { Code = 500, Message = "CosServerException: " + serverEx.GetInfo() };
+            }
+        }
+        public async Task<CosResponseModel> BatchDeleteObject(List<string> keys)
+        {
+            try
+            {
+                string bucket = this.buketName + "-" + this.appid; //存储桶名称 格式：BucketName-APPID
+                DeleteMultiObjectRequest request = new DeleteMultiObjectRequest(bucket);
+                request.SetDeleteQuiet(false);
+                request.SetObjectKeys(keys);
+                request.SetSign(TimeUtils.GetCurrentTime(TimeUnit.Seconds), 600);
+                DeleteMultiObjectResult result = await Task.FromResult(cosXml.DeleteMultiObjects(request));
                 return new CosResponseModel { Code = 200, Message = "Success", Data = result.GetResultInfo() };
             }
             catch (CosClientException clientEx)
